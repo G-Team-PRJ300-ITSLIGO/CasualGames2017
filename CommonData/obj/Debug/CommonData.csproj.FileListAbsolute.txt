@@ -9,3 +9,7 @@ C:\Users\kdryn\Desktop\SignalRMovementExampe\CommonData\obj\Debug\CommonData.csp
 C:\Users\kdryn\Desktop\SignalRMovementExampe\CommonData\obj\Debug\CommonData.csproj.CoreCompileInputs.cache
 C:\Users\kdryn\Desktop\SignalRMovementExampe\CommonData\obj\Debug\CommonData.dll
 C:\Users\kdryn\Desktop\SignalRMovementExampe\CommonData\obj\Debug\CommonData.pdb
+C:\Users\Kodi\Desktop\CasualGames2017\CommonData\bin\Debug\CommonData.dll
+C:\Users\Kodi\Desktop\CasualGames2017\CommonData\bin\Debug\CommonData.pdb
+C:\Users\Kodi\Desktop\CasualGames2017\CommonData\obj\Debug\CommonData.dll
+C:\Users\Kodi\Desktop\CasualGames2017\CommonData\obj\Debug\CommonData.pdb

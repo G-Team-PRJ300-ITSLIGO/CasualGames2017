@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.AspNet.SignalR.Client;
 using System;
+using Sprites;
+using GameComponentNS;
+using System.Collections.Generic;
 
 namespace MonoGameClient
 {
@@ -17,6 +20,9 @@ namespace MonoGameClient
         SpriteBatch spriteBatch;
         SpriteFont sf;
         string connectionMessage = string.Empty;
+        FadeTextManager FadeManager;
+        SpriteFont font;
+
 
         HubConnection serverConnection;
         IHubProxy proxy;
@@ -41,12 +47,67 @@ namespace MonoGameClient
             new GetGameInputComponent(this);
             sf = Content.Load<SpriteFont>("keyboardfont");
             // TODO: Add your initialization logic here
-             //serverConnection = new HubConnection("http://localhost:15878");
-            serverConnection = new HubConnection("http://g-teamcasualgames.azurewebsites.net");
+             serverConnection = new HubConnection("http://localhost:15878");
+            //serverConnection = new HubConnection("http://g-teamcasualgames.azurewebsites.net");
              serverConnection.StateChanged += severConnection_StateChanged;
             proxy = serverConnection.CreateHubProxy("GameHub");
             serverConnection.Start();
+
+            Action<PlayerData> joined = clientJoined;
+            proxy.On<PlayerData>("Joined", joined);
+
+            Action<List<PlayerData>> currentPlayers = clientPlayers;
+            proxy.On<List<PlayerData>>("CurrentPlayers", currentPlayers);
+
+            Action<string, Position> otherMove = clientOtherMoved;
+            proxy.On<string, Position>("OtherMove", otherMove);
+
+            FadeManager = new FadeTextManager(this);
+
+            Services.AddService<IHubProxy>(proxy);
+
+            FadeManager = new FadeTextManager(this);
             base.Initialize();
+        }
+
+
+        private void clientOtherMoved(string playerID, Position newPos)
+        {
+            // iterate over all the other player components 
+            // and check to see the type and the right id
+            foreach (var player in Components)
+            {
+                if (player.GetType() == typeof(OtherPlayerSprite)
+                    && ((OtherPlayerSprite)player).pData.playerID == playerID)
+                {
+                    OtherPlayerSprite p = ((OtherPlayerSprite)player);
+                    p.pData.playerPosition = newPos;
+                    p.Position = new Point(p.pData.playerPosition.X, p.pData.playerPosition.Y);
+                    break; // break out of loop as only one player position is being updated
+                           // and we have found it
+                }
+            }
+        }
+
+
+        // Only called when the client joins a game
+        private void clientPlayers(List<PlayerData> otherPlayers)
+        {
+            foreach (PlayerData player in otherPlayers)
+            {
+                // Create an other player sprites in this client afte
+                new OtherPlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" +  player.imageName),
+                                        new Point(player.playerPosition.X, player.playerPosition.Y));
+                connectionMessage = player.playerID + " delivered ";
+
+            }
+        }
+
+        private void clientJoined(PlayerData otherPlayerData)
+        {
+            // Create an other player sprite
+            new OtherPlayerSprite(this, otherPlayerData, Content.Load<Texture2D>("Textures\\" + otherPlayerData.imageName),
+                                    new Point(otherPlayerData.playerPosition.X, otherPlayerData.playerPosition.Y));
         }
 
         private void severConnection_StateChanged(StateChange State)
@@ -54,9 +115,11 @@ namespace MonoGameClient
             switch (State.NewState)
             {
                 case ConnectionState.Connected:
-                    connectionMessage = "Connected.....";
+                    //connectionMessage = "Connected.....";
+                    new FadeText(this, new Vector2(10, 10), "Connected..");
                     Connected = true;
                     startGame();
+                    
                     break;
                 case ConnectionState.Disconnected:
                     connectionMessage = "Disconnected.....";
@@ -87,8 +150,15 @@ namespace MonoGameClient
 
         }
 
-        private void CreatePlayer(PlayerData result)
-        { }
+        private void CreatePlayer(PlayerData player)
+        {
+            // Create an other player sprites in this client afte
+            new SimplePlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" + player.imageName),
+                                    new Point(player.playerPosition.X, player.playerPosition.Y));
+           // connectionMessage = player.playerID + " created ";
+            new FadeText(this, new Vector2(10, 20), string.Format("Player with ID {0} has joined the game.", player.playerID));
+
+        }
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -99,7 +169,11 @@ namespace MonoGameClient
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            Services.AddService<SpriteBatch>(spriteBatch);
+
+            font = Content.Load<SpriteFont>("Message");
+
+            Services.AddService<SpriteFont>(font);
         }
 
         /// <summary>
@@ -134,7 +208,7 @@ namespace MonoGameClient
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            spriteBatch.DrawString(sf,connectionMessage,Vector2.Zero,Color.White);
+            //spriteBatch.DrawString(sf,connectionMessage,Vector2.Zero,Color.White);
             spriteBatch.End();
             // TODO: Add your drawing code here
 
