@@ -21,6 +21,7 @@ namespace MonoGameClient
         SpriteFont sf;
         string connectionMessage = string.Empty;
         FadeTextManager FadeManager;
+        Scoreboard score;
         SpriteFont font;
 
 
@@ -51,7 +52,7 @@ namespace MonoGameClient
             //serverConnection = new HubConnection("http://g-teamcasualgames.azurewebsites.net");
              serverConnection.StateChanged += severConnection_StateChanged;
             proxy = serverConnection.CreateHubProxy("GameHub");
-            serverConnection.Start();
+            serverConnection.Start();          
 
             Action<PlayerData> joined = clientJoined;
             proxy.On<PlayerData>("Joined", joined);
@@ -99,12 +100,14 @@ namespace MonoGameClient
                 new OtherPlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" +  player.imageName),
                                         new Point(player.playerPosition.X, player.playerPosition.Y));
                 connectionMessage = player.playerID + " delivered ";
-
+                if(!score.players.Contains(player))
+                score.players.Add(player);
             }
         }
 
         private void clientJoined(PlayerData otherPlayerData)
         {
+            score.players.Add(otherPlayerData);
             // Create an other player sprite
             new OtherPlayerSprite(this, otherPlayerData, Content.Load<Texture2D>("Textures\\" + otherPlayerData.imageName),
                                     new Point(otherPlayerData.playerPosition.X, otherPlayerData.playerPosition.Y));
@@ -152,6 +155,7 @@ namespace MonoGameClient
 
         private void CreatePlayer(PlayerData player)
         {
+            score.players.Add(player);
             // Create an other player sprites in this client afte
             new SimplePlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" + player.imageName),
                                     new Point(player.playerPosition.X, player.playerPosition.Y));
@@ -174,6 +178,7 @@ namespace MonoGameClient
             font = Content.Load<SpriteFont>("Message");
 
             Services.AddService<SpriteFont>(font);
+            score = new Scoreboard(new List<PlayerData>(), spriteBatch, sf, new Vector2(GraphicsDevice.Viewport.Bounds.X, GraphicsDevice.Viewport.Bounds.Y), this);
         }
 
         /// <summary>
