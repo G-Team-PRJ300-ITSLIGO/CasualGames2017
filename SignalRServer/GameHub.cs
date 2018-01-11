@@ -70,7 +70,7 @@ namespace SignalRServer
                 // Update the server player position
                 found.playerPosition = newPosition;
                 // Tell all the other clients this player has moved
-                Clients.Others.Pizza(playerID, newPosition);
+                Clients.Others.OtherMove(playerID, newPosition);
             }
         }
 
