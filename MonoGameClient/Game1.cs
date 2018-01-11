@@ -45,7 +45,6 @@ namespace MonoGameClient
         protected override void Initialize()
         {
             Helpers.GraphicsDevice = GraphicsDevice;
-            new GetGameInputComponent(this);
             sf = Content.Load<SpriteFont>("keyboardfont");
             // TODO: Add your initialization logic here
              serverConnection = new HubConnection("http://localhost:15878");
@@ -84,6 +83,15 @@ namespace MonoGameClient
                     OtherPlayerSprite p = ((OtherPlayerSprite)player);
                     p.pData.playerPosition = newPos;
                     p.Position = new Point(p.pData.playerPosition.X, p.pData.playerPosition.Y);
+                    p.rotation = p.pData.playerPosition.angle;
+                    p.turret.rotation = p.pData.playerPosition.TurretAngle;
+                    p.turret.BoundingRect = new Rectangle(p.Position.X, p.Position.Y, p.turret._tx.Width, p.turret._tx.Height);
+                    if(p.pData.playerPosition.HasFired)
+                    {
+                        //p.turret.CreateProjectile();
+                        p.pData.playerPosition.HasFired = false;
+                        new FadeText(this, new Vector2(10, 10), "Fuck..");
+                    }
                     break; // break out of loop as only one player position is being updated
                            // and we have found it
                 }
@@ -125,7 +133,7 @@ namespace MonoGameClient
                     
                     break;
                 case ConnectionState.Disconnected:
-                    connectionMessage = "Disconnected.....";
+                    new FadeText(this, new Vector2(10, 10), "Fuck..");
                     if (State.OldState == ConnectionState.Connected)
                         connectionMessage = "Lost Connection.....";
                     Connected = false;

@@ -14,14 +14,21 @@ namespace Sprites
     public class SimplePlayerSprite :DrawableGameComponent
     {
         public Texture2D Image;
-        public Point Position;
+        public Vector2 Position;
         public Rectangle BoundingRect;
+        public Rectangle DestRect;
         public bool Visible = true;
         public Color tint = Color.White;
 		public PlayerData pData;
-        public Point previousPosition;		
+        public Vector2 previousPosition;		
         public int speed = 5;
         public float delay = 0;
+        public float rotation;
+        public float previousRoation;
+        public Turret turret;
+        public bool fired;
+        public Vector2 origin;
+
 
         // Constructor epects to see a loaded Texture
         // and a start position
@@ -34,38 +41,77 @@ namespace Sprites
             // Take a copy of the texture passed down
             Image = spriteImage;
             // Take a copy of the start position
-            previousPosition = Position = startPosition;
+            previousPosition = Position = (startPosition.ToVector2());
             // Calculate the bounding rectangle
-            BoundingRect = new Rectangle((int)Position.X, Position.Y, Image.Width, Image.Height);
+            BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, Image.Width, Image.Height);
+            turret = new Turret(Position,Image, game);
+            origin = new Vector2(Image.Width / 2, Image.Height / 2);
 
         }
 
         public override void Update(GameTime gameTime)
         {
+            turret.BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, turret._tx.Width, turret._tx.Height);
+
+            BoundingRect.X = BoundingRect.X + Image.Width / 2;
+            BoundingRect.Y = BoundingRect.Y + Image.Height / 2;
+
+            Vector2 direction = new Vector2((float)Math.Cos(rotation),
+                                  (float)Math.Sin(rotation));
+            direction.Normalize();
+            turret.previousRotation = turret.rotation;
+            if (InputEngine.IsKeyHeld(Keys.A))
+                turret.rotation -= 0.05f;
+            if (InputEngine.IsKeyHeld(Keys.D))
+                turret.rotation += 0.05f;
+
             previousPosition = Position;
             if(InputEngine.IsKeyHeld(Keys.Up))
-                Position += new Point(0, -speed);
+                Position += direction * speed;
             if (InputEngine.IsKeyHeld(Keys.Down))
-                Position += new Point(0, speed) ;
+                Position -= direction * speed;
+            previousRoation = rotation;
             if (InputEngine.IsKeyHeld(Keys.Left))
-                Position += new Point(-speed,0);
+                rotation -= 0.05f;
             if (InputEngine.IsKeyHeld(Keys.Right))
-                Position += new Point(speed,0) ;
-
+                rotation += 0.05f;
             delay += gameTime.ElapsedGameTime.Milliseconds;
+
+            //if (InputEngine.IsKeyPressed(Keys.Space) && turret.projectile == null)
+            //{
+            //    fired = true;
+            //    turret.CreateProjectile();
+            //    fired = false;
+                
+            //}
+            //if(turret.projectile != null)
+            //turret.projectile.Update(gameTime);
+
             // if we have moved pull back the proxy reference and send a message to the hub
-            if(Position != previousPosition /*&& delay >= 100*/)
+            if (Position != previousPosition || rotation != previousRoation || turret.rotation != turret.previousRotation)
             {
                 delay = 0;
-                pData.playerPosition = new Position { X = Position.X, Y = Position.Y };
+                pData.playerPosition = new Position { X = (int)Position.X, Y = (int)Position.Y,angle = rotation,TurretAngle = turret.rotation };
                 IHubProxy proxy = Game.Services.GetService<IHubProxy>();
                 proxy.Invoke("Moved", new Object[] 
                 {
                     pData.playerID,
-                    pData.playerPosition});
+                    pData.playerPosition,
+                });
+            }
+            if (fired)
+            {
+                pData.playerPosition.HasFired = true;
+                IHubProxy proxy = Game.Services.GetService<IHubProxy>();
+                proxy.Invoke("Fired", new Object[]
+                {
+                    pData.playerID,
+                    pData.playerPosition
+            });
+                pData.playerPosition.HasFired = false;
             }
 
-            BoundingRect = new Rectangle(Position.X, Position.Y, Image.Width, Image.Height);
+            BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, Image.Width, Image.Height);
             base.Update(gameTime);
         }
 
@@ -76,7 +122,12 @@ namespace Sprites
             if (Image != null && Visible)
             {
                 sp.Begin();
-                sp.Draw(Image, BoundingRect, tint);
+                sp.Draw(Image, BoundingRect, null, Color.White, rotation, origin, SpriteEffects.None, 0);
+                sp.Draw(turret._tx, turret.BoundingRect, null, Color.White, turret.rotation, turret.origin, SpriteEffects.None, 1);
+                //if(turret.projectile != null && turret.projectile.visible)
+                //{
+                //    sp.Draw(turret.projectile.Image, turret.projectile.BoundingRect, Color.White);
+                //}
                 sp.End();
             }
 

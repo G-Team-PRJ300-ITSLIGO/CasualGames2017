@@ -46,7 +46,7 @@ namespace GameComponentNS
             for (int i = 0; i < players.Count; i++)
             {
                 PlayerData temp = players.ElementAt(i);
-                batch.DrawString(font, temp.playerID, new Vector2(20, 20 * i), Color.White); 
+                batch.DrawString(font, temp.GamerTag, new Vector2(20, 20 * i), Color.White); 
             }
             batch.End();
             base.Update(gameTime);

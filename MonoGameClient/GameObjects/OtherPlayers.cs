@@ -16,6 +16,9 @@ namespace Sprites
         public bool Visible = true;
         public Color tint = Color.White;
 		public PlayerData pData;
+        public Turret turret;
+        public Vector2 origin;
+        public float rotation;
 		
         // Constructor epects to see a loaded Texture
         // and a start position
@@ -30,12 +33,18 @@ namespace Sprites
             Position = startPosition;
             // Calculate the bounding rectangle
             BoundingRect = new Rectangle(startPosition.X, startPosition.Y, Image.Width, Image.Height);
+            turret = new Turret(Position.ToVector2(), Image, game);
+            origin = new Vector2(Image.Width / 2, Image.Height / 2);
 
         }
 
         public override void Update(GameTime gameTime)
         {
             BoundingRect = new Rectangle(Position.X, Position.Y, Image.Width, Image.Height);
+            //if(turret.projectile != null)
+            //{
+            //    turret.projectile.Update(gameTime);
+            //}
             base.Update(gameTime);
         }
 
@@ -45,7 +54,12 @@ namespace Sprites
             if (Image != null && Visible)
             {
                 sp.Begin();
-                sp.Draw(Image, BoundingRect, tint);
+                sp.Draw(Image, BoundingRect, null, Color.White, rotation, origin, SpriteEffects.None, 0);
+                sp.Draw(turret._tx, turret.BoundingRect, null, Color.White, turret.rotation, turret.origin, SpriteEffects.None, 1);
+                //if (turret.projectile != null && turret.projectile.visible)
+                //{
+                //    sp.Draw(turret.projectile.Image, turret.projectile.BoundingRect, Color.White);
+                //}
                 sp.End();
             }
 

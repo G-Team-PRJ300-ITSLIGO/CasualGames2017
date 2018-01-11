@@ -74,5 +74,19 @@ namespace SignalRServer
             }
         }
 
+        public void Fired(string playerID, Position newPosition)
+        {
+            // Update the collection with the new player position is the player exists
+            PlayerData found = Players.FirstOrDefault(p => p.playerID == playerID);
+
+            if (found != null)
+            {
+                // Update the server player position
+                found.playerPosition = newPosition;
+                // Tell all the other clients this player has moved
+                Clients.Others.OtherMove(playerID, newPosition);
+            }
+        }
+
     }
 }

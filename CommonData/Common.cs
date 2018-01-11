@@ -10,7 +10,7 @@ namespace CommonData
     {
         public int X;
         public int Y;
-        public float Angle;
+        public float angle;
         public float TurretAngle;
         public bool HasFired;
     }
