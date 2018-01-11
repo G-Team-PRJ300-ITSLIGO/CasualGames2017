@@ -21,6 +21,7 @@ namespace MonoGameClient
         SpriteFont sf;
         string connectionMessage = string.Empty;
         FadeTextManager FadeManager;
+        Scoreboard score;
         SpriteFont font;
 
 
@@ -44,14 +45,14 @@ namespace MonoGameClient
         protected override void Initialize()
         {
             Helpers.GraphicsDevice = GraphicsDevice;
-            //new GetGameInputComponent(this);
+            new GetGameInputComponent(this);
             sf = Content.Load<SpriteFont>("keyboardfont");
             // TODO: Add your initialization logic here
              serverConnection = new HubConnection("http://localhost:15878");
             //serverConnection = new HubConnection("http://g-teamcasualgames.azurewebsites.net");
              serverConnection.StateChanged += severConnection_StateChanged;
             proxy = serverConnection.CreateHubProxy("GameHub");
-            serverConnection.Start();
+            serverConnection.Start();          
 
             Action<PlayerData> joined = clientJoined;
             proxy.On<PlayerData>("Joined", joined);
@@ -62,38 +63,12 @@ namespace MonoGameClient
             Action<string, Position> otherMove = clientOtherMoved;
             proxy.On<string, Position>("OtherMove", otherMove);
 
-            //Sets up the method that will be used when player leaves the game.
-            Action<PlayerData, List<PlayerData>> left = PlayerLeft;
-            proxy.On<PlayerData, List<PlayerData>>("Left", left);
-
-
-
             FadeManager = new FadeTextManager(this);
 
             Services.AddService<IHubProxy>(proxy);
 
             FadeManager = new FadeTextManager(this);
             base.Initialize();
-        }
-
-
-        //Code Client-Side for leaving server.
-        private void PlayerLeft(PlayerData player, List<PlayerData> otherPlayers)
-        {
-            //This method looks for the player that just left and hides him from other clients.
-            foreach (var p in Components)
-            {
-                if (p.GetType() == typeof(OtherPlayerSprite) //look through otherplayers by comparing with player that was passed to it through playerID.
-                    && ((OtherPlayerSprite)p).pData.playerID == player.playerID)
-                {
-                    OtherPlayerSprite found = ((OtherPlayerSprite)p); //Once we got it, set found to p.
-                    found.Visible = false;//Hide the player that left.
-                    break; //Break out of the loop as soon as player is found in the otherplayers collection as we have what we wanted.
-                }
-            }
-
-            new FadeText(this, new Vector2(10, 20), string.Format("{0} has left the game.", player.GamerTag));
-
         }
 
 
@@ -125,12 +100,14 @@ namespace MonoGameClient
                 new OtherPlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" +  player.imageName),
                                         new Point(player.playerPosition.X, player.playerPosition.Y));
                 connectionMessage = player.playerID + " delivered ";
-
+                if(!score.players.Contains(player))
+                score.players.Add(player);
             }
         }
 
         private void clientJoined(PlayerData otherPlayerData)
         {
+            score.players.Add(otherPlayerData);
             // Create an other player sprite
             new OtherPlayerSprite(this, otherPlayerData, Content.Load<Texture2D>("Textures\\" + otherPlayerData.imageName),
                                     new Point(otherPlayerData.playerPosition.X, otherPlayerData.playerPosition.Y));
@@ -145,20 +122,16 @@ namespace MonoGameClient
                     new FadeText(this, new Vector2(10, 10), "Connected..");
                     Connected = true;
                     startGame();
-
+                    
                     break;
                 case ConnectionState.Disconnected:
-                    //connectionMessage = "Disconnected.....";
-                    new FadeText(this, new Vector2(10, 10), "Disconnected..");
-
+                    connectionMessage = "Disconnected.....";
                     if (State.OldState == ConnectionState.Connected)
-                        //connectionMessage = "Lost Connection.....";
-                        new FadeText(this, new Vector2(10, 10), "Lost Connection..");
+                        connectionMessage = "Lost Connection.....";
                     Connected = false;
                     break;
                 case ConnectionState.Connecting:
-                    //connectionMessage = "Connecting.....";
-                    new FadeText(this, new Vector2(10, 10), "Connecting..");
+                    connectionMessage = "Connecting.....";
                     Connected = false;
                     break;
             }
@@ -182,6 +155,7 @@ namespace MonoGameClient
 
         private void CreatePlayer(PlayerData player)
         {
+            score.players.Add(player);
             // Create an other player sprites in this client afte
             new SimplePlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" + player.imageName),
                                     new Point(player.playerPosition.X, player.playerPosition.Y));
@@ -204,6 +178,7 @@ namespace MonoGameClient
             font = Content.Load<SpriteFont>("Message");
 
             Services.AddService<SpriteFont>(font);
+            score = new Scoreboard(new List<PlayerData>(), spriteBatch, sf, new Vector2(GraphicsDevice.Viewport.Bounds.X, GraphicsDevice.Viewport.Bounds.Y), this);
         }
 
         /// <summary>
@@ -223,7 +198,7 @@ namespace MonoGameClient
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                //Exit();
+                Exit();
 
             // TODO: Add your update logic here
 
