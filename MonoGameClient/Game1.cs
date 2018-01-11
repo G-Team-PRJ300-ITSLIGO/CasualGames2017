@@ -61,7 +61,7 @@ namespace MonoGameClient
             proxy.On<List<PlayerData>>("CurrentPlayers", currentPlayers);
 
             Action<string, Position> otherMove = clientOtherMoved;
-            proxy.On<string, Position>("OtherMove", otherMove);
+            proxy.On<string, Position>("Pizza", otherMove);
 
             FadeManager = new FadeTextManager(this);
 
