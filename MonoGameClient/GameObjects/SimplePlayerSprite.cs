@@ -8,7 +8,6 @@ using CommonData;
 using Engine.Engines;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.AspNet.SignalR.Client;
-using Turrets;
 
 namespace Sprites
 {
@@ -23,8 +22,6 @@ namespace Sprites
         public Point previousPosition;		
         public int speed = 5;
         public float delay = 0;
-        Turret playerTurret;
-        Vector2 origin;
 
         // Constructor epects to see a loaded Texture
         // and a start position
@@ -40,15 +37,11 @@ namespace Sprites
             previousPosition = Position = startPosition;
             // Calculate the bounding rectangle
             BoundingRect = new Rectangle((int)Position.X, Position.Y, Image.Width, Image.Height);
-            playerTurret = new Turret(spriteImage, game,Position.ToVector2());
-            
+
         }
 
         public override void Update(GameTime gameTime)
         {
-            playerTurret.position = Position.ToVector2();
-
-
             previousPosition = Position;
             if(InputEngine.IsKeyHeld(Keys.Up))
                 Position += new Point(0, -speed);
@@ -58,11 +51,6 @@ namespace Sprites
                 Position += new Point(-speed,0);
             if (InputEngine.IsKeyHeld(Keys.Right))
                 Position += new Point(speed,0) ;
-
-            if (InputEngine.IsKeyHeld(Keys.A))
-                playerTurret.angle += 0.01f;
-            if (InputEngine.IsKeyHeld(Keys.D))
-                playerTurret.angle -= 0.01f;
 
             delay += gameTime.ElapsedGameTime.Milliseconds;
             // if we have moved pull back the proxy reference and send a message to the hub
