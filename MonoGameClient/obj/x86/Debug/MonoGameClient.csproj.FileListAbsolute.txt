@@ -98,3 +98,4 @@ C:\Users\Kodi\Desktop\CasualGames2017\MonoGameClient\bin\Windows\x86\Debug\Conte
 C:\Users\Kodi\Desktop\CasualGames2017\MonoGameClient\bin\Windows\x86\Debug\Content\Textures\Player 3.xnb
 C:\Users\Kodi\Desktop\CasualGames2017\MonoGameClient\bin\Windows\x86\Debug\Content\Textures\Player 4.xnb
 C:\Users\Kodi\Desktop\CasualGames2017\MonoGameClient\bin\Windows\x86\Debug\Content\Message.xnb
+C:\Users\Kodi\Desktop\CasualGames2017\MonoGameClient\obj\x86\Debug\MonoGameClient.csproj.CoreCompileInputs.cache

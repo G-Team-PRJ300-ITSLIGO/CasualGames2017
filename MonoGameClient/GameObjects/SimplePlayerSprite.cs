@@ -21,7 +21,7 @@ namespace Sprites
 		public PlayerData pData;
         public Point previousPosition;		
         public int speed = 5;
-        public float delay = 2000;
+        public float delay = 0;
 
         // Constructor epects to see a loaded Texture
         // and a start position
@@ -42,6 +42,20 @@ namespace Sprites
 
         public override void Update(GameTime gameTime)
         {
+            //On Pressing Escape button to exit game, a message is sent to server informing that this player has left then the game is quit for the client.
+            if (InputEngine.IsKeyPressed(Keys.Escape))
+            {
+                IHubProxy proxy = Game.Services.GetService<IHubProxy>();
+                Visible = false;
+                proxy.Invoke("Left", new Object[]
+                {
+                    pData.playerID
+                });
+
+                Game.Exit();
+            }
+
+
             previousPosition = Position;
             if(InputEngine.IsKeyHeld(Keys.Up))
                 Position += new Point(0, -speed);
@@ -52,11 +66,11 @@ namespace Sprites
             if (InputEngine.IsKeyHeld(Keys.Right))
                 Position += new Point(speed,0) ;
 
-            delay -= gameTime.ElapsedGameTime.Milliseconds;
+            delay += gameTime.ElapsedGameTime.Milliseconds;
             // if we have moved pull back the proxy reference and send a message to the hub
-            if(Position != previousPosition && delay == 2000)
+            if (Position != previousPosition && delay >= 100)
             {
-                delay = 2000;
+                delay = 0;
                 pData.playerPosition = new Position { X = Position.X, Y = Position.Y };
                 IHubProxy proxy = Game.Services.GetService<IHubProxy>();
                 proxy.Invoke("Moved", new Object[] 
@@ -72,11 +86,14 @@ namespace Sprites
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch sp = Game.Services.GetService<SpriteBatch>();
+            //Grabs the font to display tag from GameClient, since it was registered as a service for use with Fade Text.
+            SpriteFont font = Game.Services.GetService<SpriteFont>();
             if (sp == null) return;
             if (Image != null && Visible)
             {
                 sp.Begin();
                 sp.Draw(Image, BoundingRect, tint);
+                sp.DrawString(font, pData.GamerTag, new Vector2(Position.X + 20, Position.Y - (Image.Height / 4)), Color.White);//Draws the player gamerTag
                 sp.End();
             }
 

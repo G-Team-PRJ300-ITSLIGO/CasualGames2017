@@ -74,5 +74,18 @@ namespace SignalRServer
             }
         }
 
+        //Method Server-Side for removing player from server when he leaves the game.
+        public void Left(string playerID)
+        {
+            //First Server searches through its players that exist on it, if found, removes it as he just left, and sends a message to other clients informing them about it.
+            PlayerData found = Players.FirstOrDefault(p => p.playerID == playerID);
+
+            if (found != null)
+            {
+                Players.Remove(found);
+                Clients.Others.Left(found, Players);
+
+            }
+        }
     }
 }
