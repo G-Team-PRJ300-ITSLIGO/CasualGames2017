@@ -45,6 +45,8 @@
     <Compile Include="Game1.cs" />
     <Compile Include="GameObjects\FadeText.cs" />
     <Compile Include="GameObjects\OtherPlayers.cs" />
+    <Compile Include="GameObjects\Turret.cs" />
+    <Compile Include="GameObjects\Projectile.cs" />
     <Compile Include="GameObjects\Scoreboard.cs" />
     <Compile Include="GameObjects\SimplePlayerSprite.cs" />
     <Compile Include="GameObjects\GetGameInputComponent.cs" />
