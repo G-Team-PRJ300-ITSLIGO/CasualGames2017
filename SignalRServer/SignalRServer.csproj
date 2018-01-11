@@ -15,7 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SignalRServer</RootNamespace>
     <AssemblyName>SignalRServer</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
