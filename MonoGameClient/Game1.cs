@@ -63,6 +63,12 @@ namespace MonoGameClient
             Action<string, Position> otherMove = clientOtherMoved;
             proxy.On<string, Position>("OtherMove", otherMove);
 
+
+            //Sets up the method that will be used when player leaves the game.
+            Action<PlayerData, List<PlayerData>> left = PlayerLeft;
+            proxy.On<PlayerData, List<PlayerData>>("Left", left);
+
+
             FadeManager = new FadeTextManager(this);
 
             Services.AddService<IHubProxy>(proxy);
@@ -71,6 +77,24 @@ namespace MonoGameClient
             base.Initialize();
         }
 
+
+        //Code Client-Side for leaving server.
+        private void PlayerLeft(PlayerData player, List<PlayerData> otherPlayers)
+        {
+            //This method looks for the player that just left and hides him from other clients.
+            foreach (var p in Components)
+            {
+                if (p.GetType() == typeof(OtherPlayerSprite) //look through otherplayers by comparing with player that was passed to it through playerID.
+                    && ((OtherPlayerSprite)p).pData.playerID == player.playerID)
+                {
+                    OtherPlayerSprite found = ((OtherPlayerSprite)p); //Once we got it, set found to p.
+                    found.Visible = false;//Hide the player that left.
+                    break; //Break out of the loop as soon as player is found in the otherplayers collection as we have what we wanted.
+                }
+            }
+
+            new FadeText(this, new Vector2(10, 20), string.Format("{0} has left the game.", player.GamerTag));
+        }
 
         private void clientOtherMoved(string playerID, Position newPos)
         {
@@ -125,13 +149,16 @@ namespace MonoGameClient
                     
                     break;
                 case ConnectionState.Disconnected:
-                    connectionMessage = "Disconnected.....";
+                    //connectionMessage = "Disconnected.....";
+                    new FadeText(this, new Vector2(10, 10), "Disconnected..");
                     if (State.OldState == ConnectionState.Connected)
-                        connectionMessage = "Lost Connection.....";
+                    new FadeText(this, new Vector2(10, 10), "Lost Connection..");
+                    //connectionMessage = "Lost Connection.....";
                     Connected = false;
                     break;
                 case ConnectionState.Connecting:
-                    connectionMessage = "Connecting.....";
+                    new FadeText(this, new Vector2(10, 10), "Connecting..");
+                    //connectionMessage = "Connecting.....";
                     Connected = false;
                     break;
             }
@@ -197,8 +224,8 @@ namespace MonoGameClient
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                //Exit();
 
             // TODO: Add your update logic here
 

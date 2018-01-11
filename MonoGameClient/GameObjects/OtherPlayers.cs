@@ -42,10 +42,13 @@ namespace Sprites
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch sp = Game.Services.GetService<SpriteBatch>();
+            SpriteFont font = Game.Services.GetService<SpriteFont>();
+
             if (Image != null && Visible)
             {
                 sp.Begin();
                 sp.Draw(Image, BoundingRect, tint);
+                sp.DrawString(font, pData.GamerTag, new Vector2(Position.X + 20, Position.Y - (Image.Height / 4)), Color.White);//Draws the player gamerTag
                 sp.End();
             }
 
