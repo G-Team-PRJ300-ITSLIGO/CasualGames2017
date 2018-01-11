@@ -45,7 +45,7 @@ namespace MonoGameClient
         protected override void Initialize()
         {
             Helpers.GraphicsDevice = GraphicsDevice;
-            sf = Content.Load<SpriteFont>("keyboardfont");
+            new GetGameInputComponent(this);
             // TODO: Add your initialization logic here
              serverConnection = new HubConnection("http://localhost:15878");
             //serverConnection = new HubConnection("http://g-teamcasualgames.azurewebsites.net");
@@ -90,7 +90,7 @@ namespace MonoGameClient
                     {
                         //p.turret.CreateProjectile();
                         p.pData.playerPosition.HasFired = false;
-                        new FadeText(this, new Vector2(10, 10), "Fuck..");
+                        p.turret.CreateProjectile(p.Position.ToVector2());
                     }
                     break; // break out of loop as only one player position is being updated
                            // and we have found it
@@ -105,7 +105,7 @@ namespace MonoGameClient
             foreach (PlayerData player in otherPlayers)
             {
                 // Create an other player sprites in this client afte
-                new OtherPlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" +  player.imageName),
+                new OtherPlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" +  player.imageName), Content.Load<Texture2D>("Textures\\" + player.turretName), Content.Load<Texture2D>("Textures\\projectile"),
                                         new Point(player.playerPosition.X, player.playerPosition.Y));
                 connectionMessage = player.playerID + " delivered ";
                 if(!score.players.Contains(player))
@@ -117,7 +117,7 @@ namespace MonoGameClient
         {
             score.players.Add(otherPlayerData);
             // Create an other player sprite
-            new OtherPlayerSprite(this, otherPlayerData, Content.Load<Texture2D>("Textures\\" + otherPlayerData.imageName),
+            new OtherPlayerSprite(this, otherPlayerData, Content.Load<Texture2D>("Textures\\" + otherPlayerData.imageName), Content.Load<Texture2D>("Textures\\" + otherPlayerData.turretName), Content.Load<Texture2D>("Textures\\projectile"),
                                     new Point(otherPlayerData.playerPosition.X, otherPlayerData.playerPosition.Y));
         }
 
@@ -165,7 +165,7 @@ namespace MonoGameClient
         {
             score.players.Add(player);
             // Create an other player sprites in this client afte
-            new SimplePlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" + player.imageName),
+            new SimplePlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" + player.imageName), Content.Load<Texture2D>("Textures\\" + player.turretName), Content.Load<Texture2D>("Textures\\projectile"),
                                     new Point(player.playerPosition.X, player.playerPosition.Y));
            // connectionMessage = player.playerID + " created ";
             new FadeText(this, new Vector2(10, 20), string.Format("Player with ID {0} has joined the game.", player.playerID));
@@ -186,7 +186,7 @@ namespace MonoGameClient
             font = Content.Load<SpriteFont>("Message");
 
             Services.AddService<SpriteFont>(font);
-            score = new Scoreboard(new List<PlayerData>(), spriteBatch, sf, new Vector2(GraphicsDevice.Viewport.Bounds.X, GraphicsDevice.Viewport.Bounds.Y), this);
+            score = new Scoreboard(new List<PlayerData>(), spriteBatch, font, new Vector2(GraphicsDevice.Viewport.Bounds.X, GraphicsDevice.Viewport.Bounds.Y), this);
         }
 
         /// <summary>

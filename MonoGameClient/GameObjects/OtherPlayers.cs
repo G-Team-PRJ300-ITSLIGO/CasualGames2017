@@ -22,7 +22,7 @@ namespace Sprites
 		
         // Constructor epects to see a loaded Texture
         // and a start position
-        public OtherPlayerSprite(Game game, PlayerData data, Texture2D spriteImage,
+        public OtherPlayerSprite(Game game, PlayerData data, Texture2D spriteImage, Texture2D turretImage,Texture2D projectileImage,
                             Point startPosition) : base(game)
         {
             pData = data;
@@ -33,19 +33,30 @@ namespace Sprites
             Position = startPosition;
             // Calculate the bounding rectangle
             BoundingRect = new Rectangle(startPosition.X, startPosition.Y, Image.Width, Image.Height);
-            turret = new Turret(Position.ToVector2(), Image, game);
+            turret = new Turret(Position.ToVector2(), turretImage,projectileImage, game);
             origin = new Vector2(Image.Width / 2, Image.Height / 2);
 
         }
 
         public override void Update(GameTime gameTime)
         {
+            if (!Visible) return;
             BoundingRect = new Rectangle(Position.X, Position.Y, Image.Width, Image.Height);
-            //if(turret.projectile != null)
-            //{
-            //    turret.projectile.Update(gameTime);
-            //}
-            base.Update(gameTime);
+            if (turret.projectiles.Count > 0)
+                foreach (SimpleProjectile p in turret.projectiles)
+            { 
+                p.Update(gameTime);
+                    if (p.CollisionDetect(BoundingRect)) break;
+                    
+       
+            }
+            foreach (SimpleProjectile p in turret.projectiles)
+            {
+                if (!p.visible)
+                    turret.projectiles.Remove(p);
+                    break;
+            }
+                base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
@@ -55,11 +66,13 @@ namespace Sprites
             {
                 sp.Begin();
                 sp.Draw(Image, BoundingRect, null, Color.White, rotation, origin, SpriteEffects.None, 0);
+                if (turret.projectiles.Count > 0)
+                    foreach (SimpleProjectile p in turret.projectiles)
+                    {
+                        sp.Draw(p.Image, p.BoundingRect, Color.White);
+                    }
                 sp.Draw(turret._tx, turret.BoundingRect, null, Color.White, turret.rotation, turret.origin, SpriteEffects.None, 1);
-                //if (turret.projectile != null && turret.projectile.visible)
-                //{
-                //    sp.Draw(turret.projectile.Image, turret.projectile.BoundingRect, Color.White);
-                //}
+              
                 sp.End();
             }
 

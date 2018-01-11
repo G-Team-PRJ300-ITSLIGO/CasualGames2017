@@ -15,26 +15,28 @@ namespace Sprites
     {
 
         public Texture2D _tx;
+        public Texture2D projectileImage;
         public float rotation = 0.0f;
         public float previousRotation;
         public Vector2 origin;
-        //public SimpleProjectile projectile = null;
+        public List<SimpleProjectile> projectiles = new List<SimpleProjectile>();
 
         public Rectangle BoundingRect;
 
-        public Turret(Vector2 p,Texture2D t,Game g)
+        public Turret(Vector2 p,Texture2D t,Texture2D t2,Game g)
         {
             _tx = t;
+            projectileImage = t2;
            BoundingRect = BoundingRect = new Rectangle((int)p.X, (int)p.Y, _tx.Width, _tx.Height);
             origin = new Vector2(_tx.Width / 2, _tx.Height / 2);
             previousRotation = rotation;
         }
 
-        //public void CreateProjectile()
-        //{
-        //    SimpleProjectile temp = new SimpleProjectile(_tx, origin, 5f, rotation);
-        //    projectile = temp;
-        //}
+        public void CreateProjectile(Vector2 pos)
+        {
+            SimpleProjectile temp = new SimpleProjectile(projectileImage, new Vector2(pos.X - projectileImage.Width/2,pos.Y-projectileImage.Height/2), 5f, rotation);
+            projectiles.Add(temp);
+        }
 
     }
 }

@@ -19,6 +19,7 @@ namespace CommonData
     {
         public string playerID;
         public string imageName = string.Empty;
+        public string turretName = string.Empty;
         public string GamerTag = string.Empty;
         public string playerName = string.Empty;
         public int Score;

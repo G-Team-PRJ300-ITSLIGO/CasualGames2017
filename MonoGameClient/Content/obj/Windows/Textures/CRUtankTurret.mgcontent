@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/s00164384/Source/Repos/CasualGames2017/MonoGameClient/Content/Textures/Player 1.png</SourceFile>
-  <SourceTime>2018-01-10T16:51:41.2271973+00:00</SourceTime>
-  <DestFile>C:/Users/s00164384/Source/Repos/CasualGames2017/MonoGameClient/Content/bin/Windows/Textures/Player 1.xnb</DestFile>
-  <DestTime>2018-01-11T13:36:07.2845938+00:00</DestTime>
+  <SourceFile>C:/Users/s00164384/Source/Repos/CasualGames2017/MonoGameClient/Content/Textures/CRUtankTurret.png</SourceFile>
+  <SourceTime>2018-01-11T17:24:08.8185399+00:00</SourceTime>
+  <DestFile>C:/Users/s00164384/Source/Repos/CasualGames2017/MonoGameClient/Content/bin/Windows/Textures/CRUtankTurret.xnb</DestFile>
+  <DestTime>2018-01-11T17:27:45.7989635+00:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T15:05:36+00:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -42,11 +42,10 @@ namespace GameComponentNS
         {
             if (!visible) return;
             batch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            batch.DrawString(font, "test", new Vector2(20, 20), Color.White);
             for (int i = 0; i < players.Count; i++)
             {
                 PlayerData temp = players.ElementAt(i);
-                batch.DrawString(font, temp.GamerTag, new Vector2(20, 20 * i), Color.White); 
+                batch.DrawString(font, temp.GamerTag, new Vector2(100,100 +( 20 * i)), Color.White); 
             }
             batch.End();
             base.Update(gameTime);

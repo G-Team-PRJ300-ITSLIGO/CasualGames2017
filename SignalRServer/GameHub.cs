@@ -12,10 +12,10 @@ namespace SignalRServer
         #region gamehubvariables
         public static Queue<PlayerData> RegisteredPlayers = new Queue<PlayerData>(new PlayerData[]
         {
-            new PlayerData {GamerTag = "Player 1",imageName = "",playerID = Guid.NewGuid().ToString() },
-            new PlayerData {GamerTag = "Player 2",imageName = "",playerID = Guid.NewGuid().ToString() },
-            new PlayerData {GamerTag = "Player 3",imageName = "",playerID = Guid.NewGuid().ToString() },
-            new PlayerData {GamerTag = "Player 4",imageName = "",playerID = Guid.NewGuid().ToString() }
+            new PlayerData {GamerTag = "Player 1",imageName = "SAStankBase",turretName = "SAStankTurret",playerID = Guid.NewGuid().ToString() },
+            new PlayerData {GamerTag = "Player 2",imageName = "RACtankBase",turretName = "RACtankTurret",playerID = Guid.NewGuid().ToString() },
+            new PlayerData {GamerTag = "Player 3",imageName = "IJFtankBase",turretName = "IJFtankTurret",playerID = Guid.NewGuid().ToString() },
+            new PlayerData {GamerTag = "Player 4",imageName = "CRUtankBase",turretName = "CRUtankTurret",playerID = Guid.NewGuid().ToString() }
         });
 
         public static List<PlayerData> Players = new List<PlayerData>();
@@ -39,7 +39,6 @@ namespace SignalRServer
                 if (RegisteredPlayers.Count > 0)
                 {
                     PlayerData newPlayer = RegisteredPlayers.Dequeue();
-                    newPlayer.imageName = character;
                     newPlayer.playerPosition = new Position
                     {
                         X = new Random().Next(700),
