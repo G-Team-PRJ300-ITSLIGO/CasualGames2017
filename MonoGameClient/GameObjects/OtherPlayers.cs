@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using CommonData;
+using CameraNS;
 
 namespace Sprites
 {
@@ -66,7 +67,7 @@ namespace Sprites
             SpriteBatch sp = Game.Services.GetService<SpriteBatch>();
             if (Image != null && Visible)
             {
-                sp.Begin();
+                sp.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Camera.CurrentCameraTranslation);
                 sp.Draw(Image, BoundingRect, null, Color.White, rotation, origin, SpriteEffects.None, 0);
                 if (turret.projectiles.Count > 0)
                     foreach (SimpleProjectile p in turret.projectiles)

@@ -27,4 +27,18 @@ namespace CommonData
         public Position playerPosition;
         public string Password;
     }
+
+    public class CollectableData
+    {
+        public int ID;
+        public Position position;
+        public int worth;
+        public CollectableData(int id, Position p, int val)
+        {
+            ID = id;
+            position = p;
+            worth = val;
+        }
+
+    }
 }

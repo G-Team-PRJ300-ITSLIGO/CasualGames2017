@@ -8,6 +8,7 @@ using System;
 using Sprites;
 using GameComponentNS;
 using System.Collections.Generic;
+using CameraNS;
 
 namespace MonoGameClient
 {
@@ -16,6 +17,7 @@ namespace MonoGameClient
     /// </summary>
     public class Game1 : Game
     {
+        Camera c;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteFont sf;
@@ -23,6 +25,10 @@ namespace MonoGameClient
         FadeTextManager FadeManager;
         Scoreboard score;
         SpriteFont font;
+
+        Texture2D BG;
+        Vector2 worldCoords;
+        private Rectangle worldRect;
 
 
         HubConnection serverConnection;
@@ -51,7 +57,8 @@ namespace MonoGameClient
             //serverConnection = new HubConnection("http://g-teamcasualgames.azurewebsites.net");
              serverConnection.StateChanged += severConnection_StateChanged;
             proxy = serverConnection.CreateHubProxy("GameHub");
-            serverConnection.Start();          
+            serverConnection.Start();
+            c = new Camera(this, Vector2.Zero, worldCoords/*, player.playerID*/);
 
             Action<PlayerData> joined = clientJoined;
             proxy.On<PlayerData>("Joined", joined);
@@ -62,12 +69,43 @@ namespace MonoGameClient
             Action<string, Position> otherMove = clientOtherMoved;
             proxy.On<string, Position>("OtherMove", otherMove);
 
+            Action<int, int> getWorldSize = SetWorldSize;
+            proxy.On<int, int>("SendWorldSize", getWorldSize);
+
+            Action<PlayerData, List<PlayerData>> left = PlayerLeft;
+            proxy.On<PlayerData, List<PlayerData>>("Left", left);
+
             FadeManager = new FadeTextManager(this);
 
             Services.AddService<IHubProxy>(proxy);
 
             FadeManager = new FadeTextManager(this);
             base.Initialize();
+        }
+
+
+        //Code Client-Side for leaving server.
+        private void PlayerLeft(PlayerData player, List<PlayerData> otherPlayers)
+        {
+            //This method looks for the player that just left and hides him from other clients.
+            foreach (var p in Components)
+            {
+                if (p.GetType() == typeof(OtherPlayerSprite) //look through otherplayers by comparing with player that was passed to it through playerID.
+                    && ((OtherPlayerSprite)p).pData.playerID == player.playerID)
+                {
+                    OtherPlayerSprite found = ((OtherPlayerSprite)p); //Once we got it, set found to p.
+                    found.Visible = false;//Hide the player that left.
+                    break; //Break out of the loop as soon as player is found in the otherplayers collection as we have what we wanted.
+                }
+            }
+
+            new FadeText(this, new Vector2(10, 20), string.Format("{0} has left the game.", player.GamerTag));
+        }
+
+        private void SetWorldSize(int X, int Y)
+        {
+            worldCoords = new Vector2(X, Y);
+            worldRect = new Rectangle(new Point(0, 0), worldCoords.ToPoint());
         }
 
 
@@ -167,11 +205,14 @@ namespace MonoGameClient
 
         private void CreatePlayer(PlayerData player)
         {
+            proxy.Invoke("SendWorldSize");
             score.players.Add(player);
             // Create an other player sprites in this client afte
             new SimplePlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" + player.imageName), Content.Load<Texture2D>("Textures\\" + player.turretName), Content.Load<Texture2D>("Textures\\projectile"),
-                                    new Point(player.playerPosition.X, player.playerPosition.Y));
-           // connectionMessage = player.playerID + " created ";
+                                    new Point(player.playerPosition.X, player.playerPosition.Y),worldRect);
+            // Setup Camera
+
+            // connectionMessage = player.playerID + " created ";
             new FadeText(this, new Vector2(10, 20), string.Format("Player with ID {0} has joined the game.", player.playerID));
 
         }
@@ -191,6 +232,9 @@ namespace MonoGameClient
 
             Services.AddService<SpriteFont>(font);
             score = new Scoreboard(new List<PlayerData>(), spriteBatch, font, new Vector2(GraphicsDevice.Viewport.Bounds.X, GraphicsDevice.Viewport.Bounds.Y), this);
+
+            BG = Content.Load<Texture2D>("Textures\\bg");
+
         }
 
         /// <summary>
@@ -211,14 +255,10 @@ namespace MonoGameClient
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            foreach(PlayerData p in score.players)
-            {
-
-            }
             // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
+
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -227,12 +267,34 @@ namespace MonoGameClient
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
-            //spriteBatch.DrawString(sf,connectionMessage,Vector2.Zero,Color.White);
-            spriteBatch.End();
-            // TODO: Add your drawing code here
+
+            if (Connected)
+
+            {
+                DrawPlay();
+
+            }
+
+            else
+
+            {
+                spriteBatch.Begin();
+                spriteBatch.DrawString(font, connectionMessage, new Vector2(20, 20), Color.White);
+                spriteBatch.End();
+
+            }
+
 
             base.Draw(gameTime);
+        }
+        private void DrawPlay()
+
+        {
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Camera.CurrentCameraTranslation);
+            spriteBatch.Draw(BG, worldRect, Color.White);
+            spriteBatch.End();
+
         }
     }
 }

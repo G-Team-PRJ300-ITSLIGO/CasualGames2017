@@ -43,6 +43,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game1.cs" />
+    <Compile Include="GameObjects\Camera.cs" />
+    <Compile Include="GameObjects\Collectable.cs" />
     <Compile Include="GameObjects\FadeText.cs" />
     <Compile Include="GameObjects\OtherPlayers.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
@@ -72,6 +74,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Textures\bg.png" />
+    <Content Include="Content\Textures\collectable.png" />
     <Content Include="Content\Textures\CRUtankBase.png" />
     <Content Include="Content\Textures\CRUtankTurret.png" />
     <Content Include="Content\Textures\IJFtankBase.png" />

@@ -8,6 +8,7 @@ using CommonData;
 using Engine.Engines;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.AspNet.SignalR.Client;
+using CameraNS;
 
 namespace Sprites
 {
@@ -29,13 +30,16 @@ namespace Sprites
         public bool fired;
         public Vector2 origin;
         public Game g;
+        Rectangle worldCoords;
 
 
         // Constructor epects to see a loaded Texture
         // and a start position
         public SimplePlayerSprite(Game game, PlayerData data, Texture2D spriteImage,
-                            Texture2D turretImage,Texture2D projectileImage,Point startPosition) :base(game)
+                            Texture2D turretImage,Texture2D projectileImage,Point startPosition,Rectangle world) :base(game)
         {
+            worldCoords = world;
+
             g = game;
             pData = data;
             DrawOrder = 1;
@@ -53,7 +57,23 @@ namespace Sprites
 
         public override void Update(GameTime gameTime)
         {
+
+
             if (!Visible) return;
+
+            //On Pressing Escape button to exit game, a message is sent to server informing that this player has left then the game is quit for the client.
+            if (InputEngine.IsKeyPressed(Keys.Escape))
+            {
+                IHubProxy proxy = Game.Services.GetService<IHubProxy>();
+                Visible = false;
+                proxy.Invoke("Left", new Object[]
+                {
+                    pData.playerID
+                });
+
+                Game.Exit();
+            }
+
             turret.BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, turret._tx.Width, turret._tx.Height);
 
             BoundingRect.X = BoundingRect.X + Image.Width / 2;
@@ -113,6 +133,7 @@ namespace Sprites
                     pData.playerID,
                     pData.playerPosition,
                 });
+
             }
             if (fired)
             {
@@ -133,12 +154,14 @@ namespace Sprites
 
         public override void Draw(GameTime gameTime)
         {
+            SpriteFont font = Game.Services.GetService<SpriteFont>();
             SpriteBatch sp = Game.Services.GetService<SpriteBatch>();
             if (sp == null) return;
             if (Image != null && Visible)
             {
-                sp.Begin();
+                sp.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Camera.CurrentCameraTranslation);
                 sp.Draw(Image, BoundingRect, null, Color.White, rotation, origin, SpriteEffects.None, 0);
+                sp.DrawString(font, pData.GamerTag, new Vector2(Position.X + 20, Position.Y - (Image.Height / 4)), Color.White);//Draws the player gamerTag
                 if (turret.projectiles.Count > 0)
                     foreach (SimpleProjectile p in turret.projectiles)
                     {

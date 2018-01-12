@@ -9,6 +9,9 @@ namespace SignalRServer
 {
     public class GameHub : Hub
     {
+        public static int WorldX = 1920;
+
+        public static int WorldY = 1200;
         #region gamehubvariables
         public static Queue<PlayerData> RegisteredPlayers = new Queue<PlayerData>(new PlayerData[]
         {
@@ -41,8 +44,10 @@ namespace SignalRServer
                     PlayerData newPlayer = RegisteredPlayers.Dequeue();
                     newPlayer.playerPosition = new Position
                     {
-                        X = new Random().Next(700),
-                        Y = new Random().Next(500)
+                        X = new Random().Next(WorldX),
+
+                        Y = new Random().Next(WorldY)
+
                     };
                     // Tell all the other clients that this player has Joined
                     Clients.Others.Joined(newPlayer);
@@ -58,6 +63,20 @@ namespace SignalRServer
             return null;
         }
 
+
+        //Method Server-Side for removing player from server when he leaves the game.
+        public void Left(string playerID)
+        {
+            //First Server searches through its players that exist on it, if found, removes it as he just left, and sends a message to other clients informing them about it.
+            PlayerData found = Players.FirstOrDefault(p => p.playerID == playerID);
+
+            if (found != null)
+            {
+                Players.Remove(found);
+                Clients.Others.Left(found, Players);
+
+            }
+        }
 
         public void Moved(string playerID, Position newPosition)
         {
@@ -85,6 +104,12 @@ namespace SignalRServer
                 // Tell all the other clients this player has moved
                 Clients.Others.OtherMove(playerID, newPosition);
             }
+        }
+
+        public void SendWorldSize()
+        {
+            //Returns World Coordinates to client which call for them.
+            Clients.Caller.SendWorldSize(WorldX, WorldY);
         }
 
     }
