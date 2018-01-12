@@ -19,12 +19,14 @@ namespace Sprites
         public Turret turret;
         public Vector2 origin;
         public float rotation;
+        public Game g;
 		
         // Constructor epects to see a loaded Texture
         // and a start position
         public OtherPlayerSprite(Game game, PlayerData data, Texture2D spriteImage, Texture2D turretImage,Texture2D projectileImage,
                             Point startPosition) : base(game)
         {
+            g = game;
             pData = data;
             game.Components.Add(this);
             // Take a copy of the texture passed down
@@ -46,16 +48,16 @@ namespace Sprites
                 foreach (SimpleProjectile p in turret.projectiles)
             { 
                 p.Update(gameTime);
-                    if (p.CollisionDetect(BoundingRect)) break;
+                    if (p.CollisionDetect(g)) ;
                     
        
             }
-            foreach (SimpleProjectile p in turret.projectiles)
-            {
-                if (!p.visible)
-                    turret.projectiles.Remove(p);
-                    break;
-            }
+            //foreach (SimpleProjectile p in turret.projectiles)
+            //{
+            //    if (!p.visible)
+            //        turret.projectiles.Remove(p);
+            //        break;
+            //}
                 base.Update(gameTime);
         }
 
@@ -69,6 +71,7 @@ namespace Sprites
                 if (turret.projectiles.Count > 0)
                     foreach (SimpleProjectile p in turret.projectiles)
                     {
+                        if (!p.visible) return;
                         sp.Draw(p.Image, p.BoundingRect, Color.White);
                     }
                 sp.Draw(turret._tx, turret.BoundingRect, null, Color.White, turret.rotation, turret.origin, SpriteEffects.None, 1);

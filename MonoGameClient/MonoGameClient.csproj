@@ -72,10 +72,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Textures\Player 4.png" />
-    <Content Include="Content\Textures\Player 3.png" />
-    <Content Include="Content\Textures\Player 2.png" />
-    <Content Include="Content\Textures\Player 1.png" />
+    <Content Include="Content\Textures\CRUtankBase.png" />
+    <Content Include="Content\Textures\CRUtankTurret.png" />
+    <Content Include="Content\Textures\IJFtankBase.png" />
+    <Content Include="Content\Textures\IJFtankTurret.png" />
+    <Content Include="Content\Textures\PAFtankBase.png" />
+    <Content Include="Content\Textures\PAFtankTurret.png" />
+    <Content Include="Content\Textures\projectile.png" />
+    <Content Include="Content\Textures\RACtankBase.png" />
+    <Content Include="Content\Textures\RACtankTurret.png" />
+    <Content Include="Content\Textures\SAStankBase.png" />
+    <Content Include="Content\Textures\SAStankTurret.png" />
+    <Content Include="Content\Textures\WMtankBase.png" />
+    <Content Include="Content\Textures\WMtankTurret.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

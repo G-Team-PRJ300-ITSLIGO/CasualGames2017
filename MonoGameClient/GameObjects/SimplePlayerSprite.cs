@@ -28,6 +28,7 @@ namespace Sprites
         public Turret turret;
         public bool fired;
         public Vector2 origin;
+        public Game g;
 
 
         // Constructor epects to see a loaded Texture
@@ -35,6 +36,7 @@ namespace Sprites
         public SimplePlayerSprite(Game game, PlayerData data, Texture2D spriteImage,
                             Texture2D turretImage,Texture2D projectileImage,Point startPosition) :base(game)
         {
+            g = game;
             pData = data;
             DrawOrder = 1;
             game.Components.Add(this);
@@ -82,22 +84,24 @@ namespace Sprites
             {
                 delay = 500;
                 fired = true;
-                turret.CreateProjectile(Position);
+                turret.CreateProjectile(Position,pData.GamerTag);
                 
 
             }
             if(turret.projectiles.Count > 0)
-            foreach (SimpleProjectile p in turret.projectiles)
-            {
-                p.Update(gameTime);
-                    if (p.CollisionDetect(BoundingRect)) break;
-            }
-            foreach (SimpleProjectile p in turret.projectiles)
-            {
-                if (!p.visible)
-                    turret.projectiles.Remove(p);
-                break;
-            }
+                foreach (SimpleProjectile p in turret.projectiles)
+                {
+                    p.Update(gameTime);
+                    if (p.CollisionDetect(g))
+                        p.visible = false;
+
+                }
+            //foreach (SimpleProjectile p in turret.projectiles)
+            //{
+            //    if (!p.visible)
+            //        turret.projectiles.Remove(p);
+            //    break;
+            //}
 
             // if we have moved pull back the proxy reference and send a message to the hub
             if (Position != previousPosition || rotation != previousRoation || turret.rotation != turret.previousRotation)
@@ -138,6 +142,7 @@ namespace Sprites
                 if (turret.projectiles.Count > 0)
                     foreach (SimpleProjectile p in turret.projectiles)
                     {
+                        if (p.visible)
                         sp.Draw(p.Image, p.BoundingRect, Color.White);
                     }
                 sp.Draw(turret._tx, turret.BoundingRect, null, Color.White, turret.rotation, turret.origin, SpriteEffects.None, 1);

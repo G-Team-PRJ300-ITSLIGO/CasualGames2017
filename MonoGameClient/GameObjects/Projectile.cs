@@ -17,11 +17,13 @@ namespace Sprites
         public Vector2 Position;
         public float Speed;
         public Vector2 direction;
+        public string header;
         public bool visible;
         public float Lifespan;
 
-        public SimpleProjectile(Texture2D image, Vector2 pos, float s, float r)
+        public SimpleProjectile(Texture2D image, Vector2 pos, float s, float r,string h)
         {
+            header = h;
             Image = image;
             Position = pos;
             Speed = s;
@@ -46,14 +48,21 @@ namespace Sprites
             }
         }
 
-        public bool CollisionDetect(Rectangle BoundingBox)
+        public bool CollisionDetect(Game game)
         {
-            if (BoundingRect.Intersects(BoundingBox))
-            {
-                visible = false;
-                return true;
-            }
-                return false;
+            foreach (var player in game.Components)
+                if (player.GetType() == typeof(OtherPlayerSprite))
+                {
+                    OtherPlayerSprite p = ((OtherPlayerSprite)player);
+
+                    if (BoundingRect.Intersects(p.BoundingRect))
+                    {
+                        visible = false;
+                        return true;
+                    }
+                }
+                    return false;
+                
         }
     }
 }

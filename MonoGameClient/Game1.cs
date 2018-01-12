@@ -90,7 +90,11 @@ namespace MonoGameClient
                     {
                         //p.turret.CreateProjectile();
                         p.pData.playerPosition.HasFired = false;
-                        p.turret.CreateProjectile(p.Position.ToVector2());
+                        p.turret.CreateProjectile(p.Position.ToVector2(),p.pData.GamerTag);
+                    }
+                    if(score.players.Contains(p.pData))
+                    {
+
                     }
                     break; // break out of loop as only one player position is being updated
                            // and we have found it
@@ -207,7 +211,10 @@ namespace MonoGameClient
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            foreach(PlayerData p in score.players)
+            {
 
+            }
             // TODO: Add your update logic here
 
             base.Update(gameTime);
