@@ -5,6 +5,9 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using CommonData;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.AspNet.SignalR.Client;
+using Engine.Engines;
 using CameraNS;
 
 namespace Sprites
@@ -43,6 +46,8 @@ namespace Sprites
 
         public override void Update(GameTime gameTime)
         {
+
+
             if (!Visible) return;
             BoundingRect = new Rectangle(Position.X, Position.Y, Image.Width, Image.Height);
             if (turret.projectiles.Count > 0)

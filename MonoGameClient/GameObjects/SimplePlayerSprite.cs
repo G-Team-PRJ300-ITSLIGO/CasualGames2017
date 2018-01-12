@@ -39,7 +39,7 @@ namespace Sprites
                             Texture2D turretImage,Texture2D projectileImage,Point startPosition,Rectangle world) :base(game)
         {
             worldCoords = world;
-
+            new Camera(game, Vector2.Zero, new Vector2(worldCoords.Width,worldCoords.Height)/*, player.playerID*/);
             g = game;
             pData = data;
             DrawOrder = 1;
@@ -58,9 +58,6 @@ namespace Sprites
         public override void Update(GameTime gameTime)
         {
 
-
-            if (!Visible) return;
-
             //On Pressing Escape button to exit game, a message is sent to server informing that this player has left then the game is quit for the client.
             if (InputEngine.IsKeyPressed(Keys.Escape))
             {
@@ -73,6 +70,9 @@ namespace Sprites
 
                 Game.Exit();
             }
+
+
+            if (!Visible) return;
 
             turret.BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, turret._tx.Width, turret._tx.Height);
 
@@ -149,6 +149,10 @@ namespace Sprites
             }
 
             BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, Image.Width, Image.Height);
+
+
+
+
             base.Update(gameTime);
         }
 

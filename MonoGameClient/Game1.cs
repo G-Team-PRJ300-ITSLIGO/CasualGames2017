@@ -9,6 +9,7 @@ using Sprites;
 using GameComponentNS;
 using System.Collections.Generic;
 using CameraNS;
+using Engine.Engines;
 
 namespace MonoGameClient
 {
@@ -51,14 +52,15 @@ namespace MonoGameClient
         protected override void Initialize()
         {
             Helpers.GraphicsDevice = GraphicsDevice;
-            new GetGameInputComponent(this);
+            new InputEngine(this);
             // TODO: Add your initialization logic here
-             serverConnection = new HubConnection("http://localhost:15878");
+            serverConnection = new HubConnection("http://localhost:15878");
             //serverConnection = new HubConnection("http://g-teamcasualgames.azurewebsites.net");
              serverConnection.StateChanged += severConnection_StateChanged;
             proxy = serverConnection.CreateHubProxy("GameHub");
             serverConnection.Start();
-            c = new Camera(this, Vector2.Zero, worldCoords/*, player.playerID*/);
+
+ 
 
             Action<PlayerData> joined = clientJoined;
             proxy.On<PlayerData>("Joined", joined);
@@ -74,6 +76,8 @@ namespace MonoGameClient
 
             Action<PlayerData, List<PlayerData>> left = PlayerLeft;
             proxy.On<PlayerData, List<PlayerData>>("Left", left);
+
+          
 
             FadeManager = new FadeTextManager(this);
 
@@ -101,6 +105,7 @@ namespace MonoGameClient
 
             new FadeText(this, new Vector2(10, 20), string.Format("{0} has left the game.", player.GamerTag));
         }
+
 
         private void SetWorldSize(int X, int Y)
         {
@@ -217,6 +222,9 @@ namespace MonoGameClient
 
         }
 
+
+
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -253,8 +261,6 @@ namespace MonoGameClient
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
             // TODO: Add your update logic here
             base.Update(gameTime);
         }

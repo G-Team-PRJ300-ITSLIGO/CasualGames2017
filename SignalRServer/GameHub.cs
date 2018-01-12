@@ -44,9 +44,9 @@ namespace SignalRServer
                     PlayerData newPlayer = RegisteredPlayers.Dequeue();
                     newPlayer.playerPosition = new Position
                     {
-                        X = new Random().Next(WorldX),
+                        X = new Random().Next(WorldX-128),
 
-                        Y = new Random().Next(WorldY)
+                        Y = new Random().Next(WorldY-128)
 
                     };
                     // Tell all the other clients that this player has Joined
@@ -73,6 +73,7 @@ namespace SignalRServer
             if (found != null)
             {
                 Players.Remove(found);
+                characters.Push(found.GamerTag);
                 Clients.Others.Left(found, Players);
 
             }
