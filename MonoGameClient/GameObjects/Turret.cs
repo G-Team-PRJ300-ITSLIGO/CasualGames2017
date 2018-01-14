@@ -32,9 +32,9 @@ namespace Sprites
             previousRotation = rotation;
         }
 
-        public void CreateProjectile(Vector2 pos,string header)
+        public void CreateProjectile(Vector2 pos,float speed,string header,string p)
         {
-            SimpleProjectile temp = new SimpleProjectile(projectileImage, new Vector2(pos.X - projectileImage.Width/2,pos.Y-projectileImage.Height/2), 5f, rotation,header);
+            SimpleProjectile temp = new SimpleProjectile(projectileImage, new Vector2(pos.X - projectileImage.Width/2,pos.Y-projectileImage.Height/2), speed, rotation,header,p);
             projectiles.Add(temp);
         }
 
