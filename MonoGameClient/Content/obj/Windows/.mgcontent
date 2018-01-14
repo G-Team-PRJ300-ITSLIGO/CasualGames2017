@@ -4,22 +4,22 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/keyboardfont.spritefont</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Message.spritefont</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/SAStankBase.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/SAStankTurret.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/RACtankBase.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/RACtankTurret.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/WMtankBase.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/WMtankTurret.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/CRUtankBase.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/CRUtankTurret.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/IJFtankBase.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/IJFtankTurret.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/PAFtankBase.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/PAFtankTurret.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/projectile.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/bg.png</File>
-    <File>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Textures/collectable.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/keyboardfont.spritefont</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Message.spritefont</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/SAStankBase.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/SAStankTurret.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/RACtankBase.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/RACtankTurret.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/WMtankBase.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/WMtankTurret.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/CRUtankBase.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/CRUtankTurret.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/IJFtankBase.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/IJFtankTurret.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/PAFtankBase.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/PAFtankTurret.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/projectile.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/bg.png</File>
+    <File>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Textures/collectable.png</File>
   </SourceFiles>
 </SourceFileCollection>

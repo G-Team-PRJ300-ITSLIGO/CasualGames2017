@@ -17,7 +17,7 @@ namespace Sprites
         public Texture2D Image;
         public Vector2 Position;
         public Rectangle BoundingRect;
-        public Rectangle DestRect;
+        public Rectangle CollisionRect;
         public bool Visible = true;
         public Color tint = Color.White;
 		public PlayerData pData;
@@ -50,6 +50,7 @@ namespace Sprites
             previousPosition = Position = (startPosition.ToVector2());
             // Calculate the bounding rectangle
             BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, Image.Width, Image.Height);
+            CollisionRect = BoundingRect;
             turret = new Turret(Position,turretImage,projectileImage, game);
             origin = new Vector2(Image.Width / 2, Image.Height / 2);
 
@@ -103,8 +104,9 @@ namespace Sprites
             if (InputEngine.IsKeyPressed(Keys.Space) && delay <= 0)
             {
                 delay = 500;
+                turret.CreateProjectile(Position,pData.playerID,Guid.NewGuid().ToString());
                 fired = true;
-                turret.CreateProjectile(Position,pData.GamerTag);
+                
                 
 
             }
@@ -113,7 +115,15 @@ namespace Sprites
                 {
                     p.Update(gameTime);
                     if (p.CollisionDetect(g))
-                        p.visible = false;
+                    {
+                        //p.data.position = new Position { X = (int)p.Position.X, Y = (int)p.Position.Y };
+                        IHubProxy proxy = Game.Services.GetService<IHubProxy>();
+                        proxy.Invoke("Hit", new Object[]
+                        {
+                            p.data
+                    });
+                    }
+
 
                 }
             //foreach (SimpleProjectile p in turret.projectiles)
@@ -126,7 +136,9 @@ namespace Sprites
             // if we have moved pull back the proxy reference and send a message to the hub
             if (Position != previousPosition || rotation != previousRoation || turret.rotation != turret.previousRotation)
             {
-                pData.playerPosition = new Position { X = (int)Position.X, Y = (int)Position.Y,angle = rotation,TurretAngle = turret.rotation };
+                pData.playerPosition = new Position { X = (int)Position.X, Y = (int)Position.Y};
+                pData.playerPosition.angle = rotation;
+                pData.playerPosition.TurretAngle = turret.rotation;
                 IHubProxy proxy = Game.Services.GetService<IHubProxy>();
                 proxy.Invoke("Moved", new Object[] 
                 {
@@ -137,19 +149,16 @@ namespace Sprites
             }
             if (fired)
             {
-                pData.playerPosition.HasFired = true;
                 IHubProxy proxy = Game.Services.GetService<IHubProxy>();
                 proxy.Invoke("Fired", new Object[]
                 {
-                    pData.playerID,
-                    pData.playerPosition
+                   turret.projectiles.Last().data
             });
-                pData.playerPosition.HasFired = false;
                 fired = false;
             }
 
             BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, Image.Width, Image.Height);
-
+            CollisionRect = new Rectangle((int)Position.X, (int)Position.Y, Image.Width / 2, Image.Height / 2);
 
 
 
@@ -166,15 +175,14 @@ namespace Sprites
                 sp.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Camera.CurrentCameraTranslation);
                 sp.Draw(Image, BoundingRect, null, Color.White, rotation, origin, SpriteEffects.None, 0);
                 sp.DrawString(font, pData.GamerTag, new Vector2(Position.X + 20, Position.Y - (Image.Height / 4)), Color.White);//Draws the player gamerTag
+                sp.Draw(turret._tx, turret.BoundingRect, null, Color.White, turret.rotation, turret.origin, SpriteEffects.None, 1);
+                sp.End();
+
                 if (turret.projectiles.Count > 0)
                     foreach (SimpleProjectile p in turret.projectiles)
                     {
-                        if (p.visible)
-                        sp.Draw(p.Image, p.BoundingRect, Color.White);
+                        p.Draw(gameTime, sp);
                     }
-                sp.Draw(turret._tx, turret.BoundingRect, null, Color.White, turret.rotation, turret.origin, SpriteEffects.None, 1);
-              
-                sp.End();
             }
 
             base.Draw(gameTime);
