@@ -7,8 +7,6 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.AspNet.SignalR.Client;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using CommonData;
-using CameraNS;
 
 namespace Sprites
 {
@@ -16,14 +14,14 @@ namespace Sprites
     {
         public Texture2D Image;
         public Rectangle BoundingRect;
-        public ProjectileData data;
         public Vector2 Position;
         public float Speed;
         public Vector2 direction;
         public string header;
         public bool visible;
+        public float Lifespan;
 
-        public SimpleProjectile(Texture2D image, Vector2 pos, float s, float r,string h,string p)
+        public SimpleProjectile(Texture2D image, Vector2 pos, float s, float r,string h)
         {
             header = h;
             Image = image;
@@ -34,40 +32,30 @@ namespace Sprites
             direction.Normalize();
             BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, Image.Width, Image.Height);
             visible = true;
-            data = new ProjectileData
-            {
-                ID = header,
-                projectileID = p
-            };
-
+            Lifespan = s;
         }
 
         public void Update(GameTime gameTime)
         {
          
             if (!visible) return;
+            Lifespan -= gameTime.ElapsedGameTime.Seconds;
             BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, Image.Width, Image.Height);
             Position += direction * Speed;
-
-        }
-
-        public void Draw(GameTime gameTime,SpriteBatch sp)
-        {
-            if (!visible) return;
-            sp.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Camera.CurrentCameraTranslation);
-            sp.Draw(Image, BoundingRect, Color.White);
-            sp.End();
+            if(Lifespan <= 0f)
+            {
+                visible = false;
+            }
         }
 
         public bool CollisionDetect(Game game)
         {
-            if (!visible) return false;
             foreach (var player in game.Components)
                 if (player.GetType() == typeof(OtherPlayerSprite))
                 {
                     OtherPlayerSprite p = ((OtherPlayerSprite)player);
 
-                    if (BoundingRect.Intersects(p.CollisionRect))
+                    if (BoundingRect.Intersects(p.BoundingRect))
                     {
                         visible = false;
                         return true;

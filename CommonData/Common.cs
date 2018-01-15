@@ -12,6 +12,7 @@ namespace CommonData
         public int Y;
         public float angle;
         public float TurretAngle;
+        public bool HasFired;
     }
 
     public class PlayerData
@@ -25,7 +26,6 @@ namespace CommonData
         public int Wins;
         public Position playerPosition;
         public string Password;
-
     }
 
     public class CollectableData
@@ -41,13 +41,4 @@ namespace CommonData
         }
 
     }
-
-
-    public class ProjectileData
-    {
-        public string projectileID;
-        public string ID;
-    }
-
-
 }

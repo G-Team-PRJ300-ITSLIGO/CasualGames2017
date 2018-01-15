@@ -26,8 +26,3 @@ C:\Users\s00164384\Source\Repos\CasualGames20172\CommonData\bin\Debug\CommonData
 C:\Users\s00164384\Source\Repos\CasualGames20172\CommonData\obj\Debug\CommonData.csprojResolveAssemblyReference.cache
 C:\Users\s00164384\Source\Repos\CasualGames20172\CommonData\obj\Debug\CommonData.dll
 C:\Users\s00164384\Source\Repos\CasualGames20172\CommonData\obj\Debug\CommonData.pdb
-C:\Users\Naka\Source\Repos\CasualGames20173\CommonData\bin\Debug\CommonData.dll
-C:\Users\Naka\Source\Repos\CasualGames20173\CommonData\bin\Debug\CommonData.pdb
-C:\Users\Naka\Source\Repos\CasualGames20173\CommonData\obj\Debug\CommonData.csprojResolveAssemblyReference.cache
-C:\Users\Naka\Source\Repos\CasualGames20173\CommonData\obj\Debug\CommonData.dll
-C:\Users\Naka\Source\Repos\CasualGames20173\CommonData\obj\Debug\CommonData.pdb
