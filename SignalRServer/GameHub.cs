@@ -25,6 +25,9 @@ namespace SignalRServer
 
         public static Stack<string> characters = new Stack<string>(
             new string[] { "Player 4", "Player 3", "Player 2", "Player 1" });
+
+        public List<CollectableData> Collectibles = new List<CollectableData>();
+
         #endregion
         public void Hello()
         {
@@ -44,9 +47,9 @@ namespace SignalRServer
                     PlayerData newPlayer = RegisteredPlayers.Dequeue();
                     newPlayer.playerPosition = new Position
                     {
-                        X = new Random().Next(WorldX-128),
+                        X = new Random().Next(WorldX - 128),
 
-                        Y = new Random().Next(WorldY-128)
+                        Y = new Random().Next(WorldY - 128)
 
                     };
                     // Tell all the other clients that this player has Joined
@@ -76,6 +79,18 @@ namespace SignalRServer
                 characters.Push(found.GamerTag);
                 Clients.Others.Left(found, Players);
 
+            }
+        }
+
+        public bool IsGameReady()
+        {
+            if (Players.Count > 3)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -123,5 +138,36 @@ namespace SignalRServer
             Clients.Caller.SendWorldSize(WorldX, WorldY);
         }
 
+        public void Collected(string playerID, CollectableData c)
+        {
+            PlayerData found = Players.FirstOrDefault(p => p.playerID == playerID);
+
+            if(found != null)
+            {
+                Clients.Others.CollectableCollected(playerID, c);
+            }
+        }
+
+        public void CreateCollectibles()
+        {
+            int amount = Utility.NextRandom(10, 20);
+            //Creates random amount of collectibles in the world coordinates
+            for (int i = 0; i < amount; i++)
+            {
+                Collectibles.Add(
+                        new CollectableData(
+                        i,
+                        new Position()
+                        {
+                            X = Utility.NextRandom(WorldX - 128),
+
+                            Y = Utility.NextRandom(WorldY - 128)
+                        },
+                        Utility.NextRandom(10, 50) // Assigns a random points value between 10 and 50
+                        ));
+            }
+
+            Clients.All.createCollectibles(Collectibles); //Tells clients to create them locally in each client
+        }
     }
 }

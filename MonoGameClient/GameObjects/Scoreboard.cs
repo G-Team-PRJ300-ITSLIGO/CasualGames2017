@@ -34,6 +34,7 @@ namespace GameComponentNS
                 visible = true;
             }
             else visible = false;
+            players = players.OrderBy(o => o.Score).ToList();
             base.Update(gameTime);
 
         }
@@ -41,11 +42,11 @@ namespace GameComponentNS
         public override void Draw(GameTime gameTime)
         {
             if (!visible) return;
-            batch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            batch.Begin(SpriteSortMode.BackToFront, BlendState.Additive);
             for (int i = 0; i < players.Count; i++)
             {
                 PlayerData temp = players.ElementAt(i);
-                batch.DrawString(font, temp.GamerTag, new Vector2(100,100 +( 20 * i)), Color.White); 
+                batch.DrawString(font, string.Format("{0,-15}{1,0}", temp.GamerTag, temp.Score.ToString()), new Vector2(100, 100 + (20 * i)), Color.White);
             }
             batch.End();
             base.Update(gameTime);

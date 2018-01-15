@@ -10,6 +10,7 @@ using GameComponentNS;
 using System.Collections.Generic;
 using CameraNS;
 using Engine.Engines;
+using Collectables;
 
 namespace MonoGameClient
 {
@@ -30,6 +31,7 @@ namespace MonoGameClient
         Texture2D BG;
         Vector2 worldCoords;
         private Rectangle worldRect;
+        List<Collectable> collectables = new List<Collectable>();
 
 
         HubConnection serverConnection;
@@ -83,6 +85,15 @@ namespace MonoGameClient
             Action<ProjectileData> fired = ProjectileFired;
             proxy.On<ProjectileData>("Fired", fired);
 
+            Action<List<CollectableData>> createCols = createCollectibles;
+            proxy.On<List<CollectableData>>("CreateCollectibles", createCols);
+
+            Action checkPs = playerCheck;
+            proxy.On("IsGameReady", checkPs);
+
+            Action<string, CollectableData> collected = collectableCollected;
+            proxy.On<string, CollectableData>("CollectableCollected", collected);
+
 
 
             FadeManager = new FadeTextManager(this);
@@ -113,6 +124,10 @@ namespace MonoGameClient
         }
 
 
+        private void playerCheck()
+        {
+
+        }
 
         private void hitRegistered(ProjectileData projectile)
         {
@@ -182,7 +197,23 @@ namespace MonoGameClient
             }
         }
 
-
+        private void collectableCollected(string playerID,CollectableData c)
+        {
+            foreach(Collectable collectable in collectables)
+            {
+                if(collectable.collectableData.ID == c.ID)
+                {
+                    foreach(PlayerData p in score.players)
+                    {
+                        if (p.playerID == playerID)
+                            p.Score += c.worth;
+                    }
+                    collectable.Visible = false;
+                    
+                    break; 
+                }
+            }
+        }
         // Only called when the client joins a game
         private void clientPlayers(List<PlayerData> otherPlayers)
         {
@@ -252,11 +283,34 @@ namespace MonoGameClient
             // Create an other player sprites in this client afte
             new SimplePlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" + player.imageName), Content.Load<Texture2D>("Textures\\" + player.turretName), Content.Load<Texture2D>("Textures\\projectile"),
                                     new Point(player.playerPosition.X, player.playerPosition.Y),worldRect);
-            // Setup Camera
+            // Setup Collectables
+            proxy.Invoke<bool>("IsGameReady")
+               .ContinueWith(
+                   (p) => { //Do with p
+                       if (p.Result == false)
+                           // connectionMessage = "Game is not ready";
+                           new FadeText(this, new Vector2(10, 20), string.Format("Game Not Ready!"));
+                       else
+                       {
+                           //new FadeText(this, new Vector2(10, 20), string.Format("Game IS Ready!!!!"));
+                           proxy.Invoke("CreateCollectibles");
+                       }
+                   });
 
             // connectionMessage = player.playerID + " created ";
             new FadeText(this, new Vector2(10, 20), string.Format("Player with ID {0} has joined the game.", player.playerID));
 
+        }
+
+
+        private void createCollectibles(List<CollectableData> Collectables)
+        {
+            Texture2D tx = Content.Load<Texture2D>(@"Textures\collectable");
+            foreach (var c in Collectables)
+            {
+                collectables.Add(new Collectable(this, c, tx, c.position));
+            }
+            new FadeText(this, new Vector2(10, 20), string.Format("Game is started! There are: {0} collectibles to pick up.", Collectables.Count));
         }
 
 

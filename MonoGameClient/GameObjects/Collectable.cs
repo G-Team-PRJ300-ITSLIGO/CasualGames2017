@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GameComponentNS;
 
 namespace Collectables
 {
@@ -20,6 +21,7 @@ namespace Collectables
         public bool InCollision { get; set; }
         public CollectableData collectableData;
         public bool Visible = true;
+        public Game g;
 
         public Collectable(Game game, CollectableData cData, Texture2D Texture, Position userPosition) : base(game)
         {
@@ -39,8 +41,8 @@ namespace Collectables
 
             if (!Visible) return false;
 
-            Rectangle otherBound = new Rectangle((int)otherSprite.Position.X, (int)otherSprite.Position.Y, otherSprite.Image.Width, otherSprite.Image.Height);
-            if (bounds.Intersects(otherBound))
+           
+            if (bounds.Intersects(otherSprite.CollisionRect))
             {
                 InCollision = true;
                 return true;
@@ -55,7 +57,7 @@ namespace Collectables
         public override void Update(GameTime gameTime)
         {
 
-            if(Visible)
+            if (Visible)
             {
                 if (collisionDetect())
                 {
@@ -64,13 +66,19 @@ namespace Collectables
                     IHubProxy proxy = Game.Services.GetService<IHubProxy>();
                     proxy.Invoke("Collected", new Object[]
                     {
-                    otherSprite.pData,
+                    otherSprite.pData.playerID,
                     collectableData});
+                    Scoreboard sc = (Scoreboard)Game.Components.FirstOrDefault(pl => pl.GetType() == typeof(Scoreboard));
+                    foreach (PlayerData p in sc.players)
+                    {
+                        if (p.playerID == otherSprite.pData.playerID)
+                            p.Score += collectableData.worth;
+                    }
 
                 }
             }
-            
-           base.Update(gameTime);
+
+            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
