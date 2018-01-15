@@ -22,12 +22,11 @@ namespace Sprites
         public Point previousPosition;		
         public int speed = 5;
         public float delay = 0;
-        public int health;
 
         // Constructor epects to see a loaded Texture
         // and a start position
         public SimplePlayerSprite(Game game, PlayerData data, Texture2D spriteImage,
-                            Point startPosition,int hp) :base(game)
+                            Point startPosition) :base(game)
         {
             pData = data;
             DrawOrder = 1;
@@ -38,7 +37,6 @@ namespace Sprites
             previousPosition = Position = startPosition;
             // Calculate the bounding rectangle
             BoundingRect = new Rectangle((int)Position.X, Position.Y, Image.Width, Image.Height);
-
 
         }
 
