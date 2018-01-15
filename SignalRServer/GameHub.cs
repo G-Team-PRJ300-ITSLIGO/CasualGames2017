@@ -120,7 +120,7 @@ namespace SignalRServer
             }
         }
 
-        public void Hit(ProjectileData projectile)
+        public void Hit(ProjectileData projectile,string target)
         {
             PlayerData found = Players.FirstOrDefault(p => p.playerID == projectile.ID);
 
@@ -128,7 +128,7 @@ namespace SignalRServer
             {
 
                 // Tell all the other clients this player has been Hit
-                Clients.Others.HitReg(projectile);
+                Clients.Others.HitReg(projectile,target);
             }
         }
 

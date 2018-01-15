@@ -15,6 +15,7 @@ namespace Sprites
     public class SimpleProjectile
     {
         public Texture2D Image;
+        public string target;
         public Rectangle BoundingRect;
         public ProjectileData data;
         public Vector2 Position;
@@ -70,6 +71,7 @@ namespace Sprites
                     if (BoundingRect.Intersects(p.CollisionRect))
                     {
                         visible = false;
+                        target = p.pData.playerID;
                         return true;
                     }
                 }
