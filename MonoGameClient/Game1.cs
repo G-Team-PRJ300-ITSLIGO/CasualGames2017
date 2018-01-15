@@ -77,7 +77,13 @@ namespace MonoGameClient
             Action<PlayerData, List<PlayerData>> left = PlayerLeft;
             proxy.On<PlayerData, List<PlayerData>>("Left", left);
 
-          
+            Action<ProjectileData> hitreg = hitRegistered;
+            proxy.On<ProjectileData>("HitReg", hitreg);
+
+            Action<ProjectileData> fired = ProjectileFired;
+            proxy.On<ProjectileData>("Fired", fired);
+
+
 
             FadeManager = new FadeTextManager(this);
 
@@ -107,12 +113,49 @@ namespace MonoGameClient
         }
 
 
+
+        private void hitRegistered(ProjectileData projectile)
+        {
+
+            foreach (var player in Components)
+            {
+                if (player.GetType() == typeof(OtherPlayerSprite)
+                    && ((OtherPlayerSprite)player).pData.playerID == projectile.ID)
+                {
+                    OtherPlayerSprite p = ((OtherPlayerSprite)player);
+
+                    foreach (SimpleProjectile proj in p.turret.projectiles)
+                    {
+                        if (proj.data.projectileID == projectile.projectileID)
+                        {
+                            proj.visible = false;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+
         private void SetWorldSize(int X, int Y)
         {
             worldCoords = new Vector2(X, Y);
             worldRect = new Rectangle(new Point(0, 0), worldCoords.ToPoint());
         }
 
+        private void ProjectileFired(ProjectileData projectile)
+        {
+            foreach (var player in Components)
+            {
+                if (player.GetType() == typeof(OtherPlayerSprite)
+                    && ((OtherPlayerSprite)player).pData.playerID == projectile.ID)
+                {
+                    OtherPlayerSprite p = ((OtherPlayerSprite)player);
+                    p.turret.CreateProjectile(new Vector2(p.Position.X,p.Position.Y), projectile.ID, projectile.projectileID);
+                }
+            }
+        }
 
         private void clientOtherMoved(string playerID, Position newPos)
         {
@@ -129,12 +172,6 @@ namespace MonoGameClient
                     p.rotation = p.pData.playerPosition.angle;
                     p.turret.rotation = p.pData.playerPosition.TurretAngle;
                     p.turret.BoundingRect = new Rectangle(p.Position.X, p.Position.Y, p.turret._tx.Width, p.turret._tx.Height);
-                    if(p.pData.playerPosition.HasFired)
-                    {
-                        //p.turret.CreateProjectile();
-                        p.pData.playerPosition.HasFired = false;
-                        p.turret.CreateProjectile(p.Position.ToVector2(),p.pData.GamerTag);
-                    }
                     if(score.players.Contains(p.pData))
                     {
 

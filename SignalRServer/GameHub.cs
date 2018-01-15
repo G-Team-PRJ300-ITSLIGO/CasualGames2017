@@ -93,17 +93,27 @@ namespace SignalRServer
             }
         }
 
-        public void Fired(string playerID, Position newPosition)
+        public void Fired(ProjectileData projectile)
         {
-            // Update the collection with the new player position is the player exists
-            PlayerData found = Players.FirstOrDefault(p => p.playerID == playerID);
+            PlayerData found = Players.FirstOrDefault(p => p.playerID == projectile.ID);
 
             if (found != null)
             {
-                // Update the server player position
-                found.playerPosition = newPosition;
-                // Tell all the other clients this player has moved
-                Clients.Others.OtherMove(playerID, newPosition);
+
+                //Fired
+                Clients.Others.Fired(projectile);
+            }
+        }
+
+        public void Hit(ProjectileData projectile)
+        {
+            PlayerData found = Players.FirstOrDefault(p => p.playerID == projectile.ID);
+
+            if (found != null)
+            {
+
+                // Tell all the other clients this player has been Hit
+                Clients.Others.HitReg(projectile);
             }
         }
 

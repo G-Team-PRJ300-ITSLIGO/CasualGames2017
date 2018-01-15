@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/Message.spritefont</SourceFile>
-  <SourceTime>2018-01-12T14:43:14.1709898+00:00</SourceTime>
-  <DestFile>C:/Users/s00164384/Source/Repos/CasualGames20172/MonoGameClient/Content/bin/Windows/Message.xnb</DestFile>
-  <DestTime>2018-01-12T15:02:06.6286409+00:00</DestTime>
+  <SourceFile>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/Message.spritefont</SourceFile>
+  <SourceTime>2018-01-14T18:38:45.0409519+00:00</SourceTime>
+  <DestFile>C:/Users/Naka/Source/Repos/CasualGames20173/MonoGameClient/Content/bin/Windows/Message.xnb</DestFile>
+  <DestTime>2018-01-14T18:52:54.1101827+00:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
-  <ImporterTime>2017-03-01T15:05:36+00:00</ImporterTime>
+  <ImporterTime>2016-03-30T07:36:08+01:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>
-  <ProcessorTime>2017-03-01T15:05:36+00:00</ProcessorTime>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>True</Value>
-  </Parameters>
+  <ProcessorTime>2016-03-30T07:36:08+01:00</ProcessorTime>
   <Parameters>
     <Key>TextureFormat</Key>
     <Value>Compressed</Value>
