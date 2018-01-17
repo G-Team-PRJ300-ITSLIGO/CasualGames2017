@@ -282,7 +282,7 @@ namespace MonoGameClient
             score.players.Add(player);
             // Create an other player sprites in this client afte
             new SimplePlayerSprite(this, player, Content.Load<Texture2D>("Textures\\" + player.imageName), Content.Load<Texture2D>("Textures\\" + player.turretName), Content.Load<Texture2D>("Textures\\projectile"),
-                                    new Point(player.playerPosition.X, player.playerPosition.Y),worldRect);
+                                    new Point(player.playerPosition.X, player.playerPosition.Y),worldRect,10);
             // Setup Collectables
             proxy.Invoke<bool>("IsGameReady")
                .ContinueWith(

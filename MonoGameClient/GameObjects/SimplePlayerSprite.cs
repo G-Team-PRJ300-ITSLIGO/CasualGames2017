@@ -75,7 +75,6 @@ namespace Sprites
             }
 
 
-            if (Health <= 0) return;
 
             turret.BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, turret._tx.Width, turret._tx.Height);
 
@@ -178,7 +177,6 @@ namespace Sprites
                 sp.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Camera.CurrentCameraTranslation);
                 sp.Draw(Image, BoundingRect, null, Color.White, rotation, origin, SpriteEffects.None, 0);
                 sp.DrawString(font, pData.GamerTag, new Vector2(Position.X + 20, Position.Y - (Image.Height / 4)), Color.White);//Draws the player gamerTag
-                if(Health > 0)
                 sp.Draw(turret._tx, turret.BoundingRect, null, Color.White, turret.rotation, turret.origin, SpriteEffects.None, 1);
                 sp.End();
 
