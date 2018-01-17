@@ -31,12 +31,13 @@ namespace Sprites
         public Vector2 origin;
         public Game g;
         Rectangle worldCoords;
+        public int Health;
 
 
         // Constructor epects to see a loaded Texture
         // and a start position
         public SimplePlayerSprite(Game game, PlayerData data, Texture2D spriteImage,
-                            Texture2D turretImage,Texture2D projectileImage,Point startPosition,Rectangle world) :base(game)
+                            Texture2D turretImage,Texture2D projectileImage,Point startPosition,Rectangle world,int hp) :base(game)
         {
             worldCoords = world;
             new Camera(game, Vector2.Zero, new Vector2(worldCoords.Width,worldCoords.Height)/*, player.playerID*/);
@@ -53,6 +54,7 @@ namespace Sprites
             CollisionRect = BoundingRect;
             turret = new Turret(Position,turretImage,projectileImage, game);
             origin = new Vector2(Image.Width / 2, Image.Height / 2);
+            Health = hp;
 
         }
 
@@ -73,7 +75,7 @@ namespace Sprites
             }
 
 
-            if (!Visible) return;
+            if (Health <= 0) return;
 
             turret.BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, turret._tx.Width, turret._tx.Height);
 
@@ -120,7 +122,8 @@ namespace Sprites
                         IHubProxy proxy = Game.Services.GetService<IHubProxy>();
                         proxy.Invoke("Hit", new Object[]
                         {
-                            p.data
+                            p.data,
+                            p.target
                     });
                     }
 
@@ -175,6 +178,7 @@ namespace Sprites
                 sp.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Camera.CurrentCameraTranslation);
                 sp.Draw(Image, BoundingRect, null, Color.White, rotation, origin, SpriteEffects.None, 0);
                 sp.DrawString(font, pData.GamerTag, new Vector2(Position.X + 20, Position.Y - (Image.Height / 4)), Color.White);//Draws the player gamerTag
+                if(Health > 0)
                 sp.Draw(turret._tx, turret.BoundingRect, null, Color.White, turret.rotation, turret.origin, SpriteEffects.None, 1);
                 sp.End();
 
