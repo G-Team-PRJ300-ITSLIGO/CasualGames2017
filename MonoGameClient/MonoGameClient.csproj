@@ -43,13 +43,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game1.cs" />
+    <Compile Include="GameObjects\Camera.cs" />
+    <Compile Include="GameObjects\Collectable.cs" />
     <Compile Include="GameObjects\FadeText.cs" />
     <Compile Include="GameObjects\OtherPlayers.cs" />
+    <Compile Include="GameObjects\Projectile.cs" />
     <Compile Include="GameObjects\Scoreboard.cs" />
     <Compile Include="GameObjects\SimplePlayerSprite.cs" />
     <Compile Include="GameObjects\GetGameInputComponent.cs" />
     <Compile Include="GameObjects\Helpers.cs" />
     <Compile Include="GameObjects\InputEngine.cs" />
+    <Compile Include="GameObjects\Turret.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameObjects\SimpleKeyboard.cs" />
@@ -70,10 +74,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Textures\Player 4.png" />
-    <Content Include="Content\Textures\Player 3.png" />
-    <Content Include="Content\Textures\Player 2.png" />
-    <Content Include="Content\Textures\Player 1.png" />
+    <Content Include="Content\Textures\bg.png" />
+    <Content Include="Content\Textures\collectable.png" />
+    <Content Include="Content\Textures\CRUtankBase.png" />
+    <Content Include="Content\Textures\CRUtankTurret.png" />
+    <Content Include="Content\Textures\IJFtankBase.png" />
+    <Content Include="Content\Textures\IJFtankTurret.png" />
+    <Content Include="Content\Textures\PAFtankBase.png" />
+    <Content Include="Content\Textures\PAFtankTurret.png" />
+    <Content Include="Content\Textures\projectile.png" />
+    <Content Include="Content\Textures\RACtankBase.png" />
+    <Content Include="Content\Textures\RACtankTurret.png" />
+    <Content Include="Content\Textures\SAStankBase.png" />
+    <Content Include="Content\Textures\SAStankTurret.png" />
+    <Content Include="Content\Textures\WMtankBase.png" />
+    <Content Include="Content\Textures\WMtankTurret.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
